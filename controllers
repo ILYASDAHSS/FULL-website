@@ -1,0 +1,80 @@
+
+
+let posts = [
+  { id: 1, title: "post one" },
+  { id: 2, title: "post two" },
+  { id: 3, title: "post three" }
+];
+
+// get all post
+//@route GET /api/posts
+ export const getPosts = (req, res) => {
+  const limit = parseInt(req.query.limit);
+  if (!isNaN(limit) && limit > 0) {
+    res.status(200).json(posts.slice(0, limit));
+  } else {
+    res.status(200).json(posts);
+  }
+};
+
+//get single post 
+///api/posts/:id
+ export const getPost = (req, res ,next) => {
+  const id = parseInt(req.params.id);
+  const post = posts.find((post) => post.id === id);
+
+  if (!post) {
+   const eroor =  new Error("not this is just error");
+   error.status(404);
+    return next(eroor)
+  } else {
+    res.status(200).json(post);
+  }
+}
+
+//Post dingle post 
+//POST/api/posts/:id
+ export const createPOST = (req,res)=>{
+  const newpost = {
+    id:posts.length +1,
+    title: req.body.title
+  };
+  if(!newpost.title){
+    return res.status(400).json({msg:"pleas includ a title"})
+  }
+  posts.push(newpost);
+  res.status(201).json(posts)
+}
+//update dingle post 
+//PUt/api/posts/:id
+export const UpdatePost = (req,res)=>{
+  const deletpost ={
+    id: posts.length -1,
+    title:req.body.title
+  }
+  if(!deletpost){
+    return res.status(400).json({msg:"please put the right choice"})
+  }
+  res.status(201).json(posts);
+}
+
+//DELETE dingle post 
+//PUt/api/posts/:id
+
+export const DeletPost = (req, res) => {
+  const id = parseInt(req.params.id);
+  const post = posts.find((post) => post.id === id);
+
+  if (!post) {
+    return res.status(404).json({ msg: "Post not found" });
+  }
+
+  if (!req.body.title) {
+    return res.status(400).json({ msg: "Please include a title" });
+  }
+
+  // update the post
+  post.title = req.body.title;
+
+  res.status(200).json(post);
+}
